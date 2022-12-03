@@ -1,0 +1,63 @@
+// 路由权限
+import type { Router } from 'vue-router'
+import { getPageTitle } from '@/utils/get-page-title'
+import { getSettings } from '@/api/maint'
+import { useUserStore } from '@/stores/user'
+
+export default (router: Router) => {
+  // 前置守卫
+  router.beforeEach(async (to, from) => {
+    const userStore = useUserStore()
+    const token = userStore.userInfo && userStore.userInfo.Token
+
+    if (token) {
+      // 如果有token
+      if (to.name === 'login') {
+        // 如果去的是登陆页 - 回到主页
+        if (userStore.userInfo && userStore.userInfo.UserId) {
+          return { name: 'layout' }
+        } else {
+          userStore.clearUserData()
+          return true
+        }
+      } else {
+        // 如果去的不是登陆页 并且没有菜单
+        if (!userStore.loading.systemList) {
+          // 获取菜单
+          await userStore.getSytemListAndMenu()
+
+          return {
+            path: to.path,
+            replace: true,
+          }
+        } else {
+          return true
+        }
+      }
+    } else {
+      // 如果没有token
+      if (to.meta.requiresAuth) {
+        // 查看当前页面是否需要权限 - 去登陆
+        return { name: 'login' }
+      } else {
+        // 不需要权限 - 通过
+        return true
+      }
+    }
+  })
+
+  router.beforeEach(async (to) => {
+    const userStore = useUserStore()
+    // 是否加载过配置文件
+    if (!userStore.loading.settings) {
+      // 获取本地配置
+      const { data } = await getSettings()
+      // 保存到store
+      userStore.updateSettings(data)
+    }
+
+    // 设置标题
+    document.title = getPageTitle(to.meta.title)
+    return true
+  })
+}
