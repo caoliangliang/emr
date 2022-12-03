@@ -8,6 +8,7 @@ import type {
   UserLicenseSystemDto,
   UserMenuNodeDto,
   UserRefreshTokenDto,
+  VersionDto,
 } from './types'
 
 /**
@@ -61,6 +62,17 @@ export function getSettings() {
   return request<SettingsDto>({
     baseURL: '',
     url: 'settings.json',
+  })
+}
+
+/**
+ * 获取本地版本文件
+ * @returns
+ */
+export function getVersionNote() {
+  return request<VersionDto>({
+    baseURL: '',
+    url: 'version.json',
   })
 }
 

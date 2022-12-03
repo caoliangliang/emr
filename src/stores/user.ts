@@ -6,6 +6,7 @@ import type {
   UserLicenseSystemDto,
   UserMenuNodeDto,
   UserSystemDto,
+  VersionDto,
 } from '@/api/maint/types'
 import type { AxiosResponse } from 'axios'
 import {
@@ -13,6 +14,7 @@ import {
   getSystemByHospitalCode,
   getMenuBysystemCode,
   refreshToken,
+  getVersionNote,
 } from '@/api/maint'
 import { setStroage, getStroage, clearStorage } from '@/utils/stroage'
 import router from '@/router'
@@ -35,7 +37,9 @@ type UserType = {
   systemList: UserLicenseSystemDto
   menuList: UserSystemAndMenu[]
   systemMenuObj: SystemMenuOBJ
+  version: VersionDto
   loading: {
+    version: boolean
     systemList: boolean
     settings: boolean
   }
@@ -50,13 +54,24 @@ export const useUserStore = defineStore('user', {
     systemList: { SystemList: [], LicenseMessage: '' },
     menuList: [],
     systemMenuObj: {},
+    version: {},
     loading: {
+      version: false,
       systemList: false,
       settings: false,
     },
   }),
   getters: {},
   actions: {
+    // 获取本地版本文件
+    async getVersion() {
+      if (this.loading.version) return this.version
+      const { data } = await getVersionNote()
+      this.version = data
+      this.loading.version = true
+      return this.version
+    },
+
     // 获取系统和菜单
     async getSytemListAndMenu(): Promise<{
       menuList: UserSystemAndMenu[]

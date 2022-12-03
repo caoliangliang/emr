@@ -3,6 +3,11 @@ export interface SettingsDto {
   title?: string
 }
 
+// 版本文件
+export interface VersionDto {
+  VersionNote?: string[]
+}
+
 // 用户登录表单
 export interface UserLoginDto {
   Account: string
