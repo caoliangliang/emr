@@ -7,7 +7,7 @@ import type {
   SettingsDto,
   UserLicenseSystemDto,
   UserMenuNodeDto,
-  UserRefreshTokenDto
+  UserRefreshTokenDto,
 } from './types'
 
 /**
@@ -68,9 +68,7 @@ export function getSettings() {
  * 根据院区和用户获取系统
  * @returns
  */
-export function getSystemByHospitalCode(params: {
-  hospitalCode: string
-}) {
+export function getSystemByHospitalCode(params: { hospitalCode: string }) {
   return request<UserLicenseSystemDto>({
     url: `/maint/user/${params.hospitalCode}/system`,
     params,
@@ -103,10 +101,10 @@ export function userLogoutApi() {
  * 刷新token
  * @returns
  */
- export function refreshToken(data:UserRefreshTokenDto) {
+export function refreshToken(data: UserRefreshTokenDto) {
   return request<UserTokenInfoDto>({
     url: '/maint/account',
     method: 'put',
-    data
+    data,
   })
 }

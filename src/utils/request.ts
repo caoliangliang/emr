@@ -44,7 +44,7 @@ instance.interceptors.response.use(
       return instance.request(error.config)
     } else {
       // 提示错误信息
-      let msg = res.data.detail || res.data.title
+      const msg = res.data.detail || res.data.title
       ElMessage.error(msg)
     }
 

@@ -75,7 +75,7 @@ export const useUserStore = defineStore('user', {
       this.systemList = data
 
       // 获取菜单
-      let promisArr: Promise<AxiosResponse<UserMenuNodeDto[], any>>[] = []
+      const promisArr: Promise<AxiosResponse<UserMenuNodeDto[], any>>[] = []
       data.SystemList.forEach((item) =>
         promisArr.push(getMenuBysystemCode({ systemCode: item.SystemCode })),
       )

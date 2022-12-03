@@ -35,7 +35,7 @@
 <script setup lang="ts">
 import type { UserSystemDto } from '@/api/maint/types'
 import { useUserStore } from '@/stores/user'
-import { useCurrentSystem,useGetFirstMenus } from '@/hooks'
+import { useCurrentSystem, useGetFirstMenus } from '@/hooks'
 const userStore = useUserStore()
 const emits = defineEmits(['changeMenu'])
 

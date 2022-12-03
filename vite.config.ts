@@ -41,7 +41,7 @@ export default defineConfig({
       ],
       // eslint报错解决
       eslintrc: {
-        enabled: false,
+        enabled: true,
         filepath: './.eslintrc-auto-import.json',
         globalsPropValue: true,
       },

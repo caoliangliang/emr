@@ -3,7 +3,7 @@
   <span class="versions-info">
     <span class="version-number">当前版本号：{{ version }}</span>
     <span class="version-update">
-      <IEpBell  style="margin-right: 3px;"/>
+      <IEpBell style="margin-right: 3px" />
       版本更新内容
     </span>
   </span>

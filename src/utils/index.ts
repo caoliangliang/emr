@@ -13,6 +13,6 @@ export const menuListFlat = (menuList: UserMenuNodeDto[]) => {
     list = list.concat(arr)
   }
   return list.filter((item) => {
-   return  item.Component!==null && item.Component !== ''
+    return item.Component !== null && item.Component !== ''
   })
 }

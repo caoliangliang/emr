@@ -1,9 +1,5 @@
-<template>
-404
-</template>
+<template>404</template>
 
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>
