@@ -1,12 +1,9 @@
 import axios from 'axios'
 import { useUserStore } from '@/stores/user'
 
-// 定义接口基准路径
-export const baseURL = import.meta.env.VITE_APP_BASE_API
-
 // 创建一个独立实例对象
 const instance = axios.create({
-  baseURL,
+  baseURL: import.meta.env.VITE_APP_BASE_API,
   timeout: 5000,
 })
 
@@ -14,8 +11,14 @@ const instance = axios.create({
 instance.interceptors.request.use(
   (config) => {
     // 在发送请求之前做些什么
-    // 统一添加请求头的token
     const userStore = useUserStore()
+    // 统一添加基地址
+    if (config.baseURL !== '') {
+      config.baseURL = import.meta.env.DEV
+        ? import.meta.env.VITE_APP_BASE_API
+        : userStore.settings.baseURL
+    }
+    // 统一添加请求头的token
     const token = userStore.userInfo && userStore.userInfo.Token
     if (token) config.headers!.Authorization = `Bearer ${token}`
 

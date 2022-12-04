@@ -1,4 +1,5 @@
 {
   "title": "医院",
-  "sessionTimeout": 30
+  "sessionTimeout": 30,
+  "baseURL": "http://192.168.7.20:8888"
 }

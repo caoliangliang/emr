@@ -2,6 +2,7 @@
 export interface SettingsDto {
   title?: string
   sessionTimeout?: number
+  baseURL?: string
 }
 
 // 版本文件

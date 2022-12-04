@@ -59,13 +59,6 @@ export default (router: Router) => {
   })
 
   router.beforeEach(async (to) => {
-    const userStore = useUserStore()
-    // 是否加载过配置文件
-    if (!userStore.loading.settings) {
-      // 获取本地配置
-      await userStore.updateSettings()
-    }
-
     // 设置标题
     document.title = getPageTitle(to.meta.title)
     return true
