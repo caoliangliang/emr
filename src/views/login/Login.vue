@@ -43,7 +43,11 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" round @click="login(logoFormRef)"
+          <el-button
+            type="primary"
+            round
+            @click="login(logoFormRef)"
+            :disabled="disabledLogin"
             >登录</el-button
           >
         </el-form-item>
@@ -121,44 +125,50 @@ const getPublicKey = async (pwd: string) => {
   let newPwd = jse.encrypt(pwd) as string // 进行加密
   return newPwd
 }
-
+const disabledLogin = ref(false)
 // 用户登录
 const login = async (logoFormRef: FormInstance | undefined) => {
   // 表单验证
   if (!(await useValidate(logoFormRef))) return
-  const pwdLengthFlag = logoForm.Password.length < 8
-  logoForm.Password = await getPublicKey(logoForm.Password)
-  // 登录
-  const { data } = await userLogin(logoForm)
+  disabledLogin.value = true
+  try {
+    const pwdLengthFlag = logoForm.Password.length < 8
+    logoForm.Password = await getPublicKey(logoForm.Password)
+    // 登录
+    const { data } = await userLogin(logoForm)
 
-  // 登录和token数据存储到 pinia
-  const { Password, ...logoFormRest } = logoForm
-  const userInfo = {
-    ...logoFormRest,
-    ...data,
-  }
-  const userStore = useUserStore()
-  userStore.updateUserInfo(userInfo as UserLoginDto & UserTokenInfoDto)
+    // 登录和token数据存储到 pinia
+    const { Password, ...logoFormRest } = logoForm
+    const userInfo = {
+      ...logoFormRest,
+      ...data,
+    }
+    const userStore = useUserStore()
+    userStore.updateUserInfo(userInfo as UserLoginDto & UserTokenInfoDto)
 
-  // 处理密码过去问题
-  if (data.Message === '密码过期') {
-    ElMessage({
-      message: '密码已过期，请修改',
-      type: 'warning',
-      center: true,
-    })
-    // 跳转修改密码页面
-    router.replace('/revisePassword')
-  } else {
-    // 密码小于8位提示
-    if (pwdLengthFlag)
+    // 处理密码过去问题
+    if (data.Message === '密码过期') {
       ElMessage({
-        message: '密码长度不足8位，请尽快修改',
+        message: '密码已过期，请修改',
         type: 'warning',
         center: true,
       })
-    // 跳转主页
-    router.push('/')
+      // 跳转修改密码页面
+      router.replace('/revisePassword')
+    } else {
+      // 密码小于8位提示
+      if (pwdLengthFlag)
+        ElMessage({
+          message: '密码长度不足8位，请尽快修改',
+          type: 'warning',
+          center: true,
+        })
+      // 跳转主页
+      router.push('/')
+    }
+    disabledLogin.value = false
+  } catch (error) {
+    disabledLogin.value = false
   }
 }
 </script>

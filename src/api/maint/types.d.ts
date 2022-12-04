@@ -111,3 +111,11 @@ export interface UserMenuNodeDto {
   Hidden: boolean
   Children: UserMenuNodeDto[]
 }
+
+// 修改登录密码
+export interface UserChangePwdDto {
+  UserId: number
+  OldPassword: string
+  Password: string
+  RePassword: string
+}

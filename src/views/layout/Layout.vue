@@ -12,7 +12,7 @@
       </section>
       <!-- 个人 -->
       <section class="header-info">
-        <el-dropdown :hide-on-click="false">
+        <el-dropdown :hide-on-click="false" @command="commandFn">
           <span class="header-info-dropdown">
             <el-space>
               <IEpUserFilled size="20" />
@@ -22,12 +22,21 @@
           </span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item>修改密码</el-dropdown-item>
+              <el-dropdown-item command="修改密码">修改密码</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
         <el-button class="log-out" link @click="logoutFn">退出</el-button>
-        <div></div>
+        <el-dialog
+          v-model="rePwdVisible"
+          title="修改密码"
+          width="450"
+          :close-on-press-escape="false"
+          :close-on-click-modal="false"
+          destroy-on-close
+        >
+          <RevisePassword />
+        </el-dialog>
       </section>
     </el-header>
     <el-container>
@@ -50,11 +59,11 @@
 <script setup lang="ts">
 import type { UserSystemDto, UserMenuNodeDto } from '@/api/maint/types'
 import type { AsideMenuInstance } from './typings'
-
 import logoUrl from '@/assets/images/logo.png'
 import SystemMenu from './components/SystemMenu.vue'
 import AsideMenu from './components/AsideMenu.vue'
 import FooterContent from './components/FooterContent.vue'
+import RevisePassword from './components/RevisePassword.vue'
 import { getUserInfo } from '@/api/maint'
 import { useUserStore } from '@/stores/user'
 const userStore = useUserStore()
@@ -80,6 +89,16 @@ const changeMenuFn = (SystemMeunArr: [UserSystemDto, UserMenuNodeDto]) => {
 // 退出登录
 const logoutFn = () => {
   userStore.userLogout()
+}
+
+// 修改密码
+const rePwdVisible = ref(false)
+const commandFn = (command: string) => {
+  switch (command) {
+    case '修改密码':
+      rePwdVisible.value = true
+      break
+  }
 }
 </script>
 

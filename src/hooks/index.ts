@@ -1,8 +1,14 @@
 import type { FormInstance } from 'element-plus'
-import type { UserMenuNodeDto, UserSystemDto } from '@/api/maint/types'
+import type {
+  UserMenuNodeDto,
+  UserSystemDto,
+  UserChangePwdDto,
+} from '@/api/maint/types'
+import { getCurrentPublicKey } from '@/api/maint'
 import router, { asyncRoutes } from '@/router'
 import type { RouteRecordRaw } from 'vue-router'
 import { useUserStore } from '@/stores/user'
+import { JSEncrypt } from 'jsencrypt'
 
 /**
  * element-plus表单验证
@@ -43,7 +49,6 @@ export const useCurrentSystem = (): [UserSystemDto, UserMenuNodeDto] => {
   let menu = null
   if (route.path === '/') {
     system = userStore.systemList.SystemList[0]
-
     menu = useGetFirstMenus(userStore.systemMenuObj[system.SystemCode][0])
   } else {
     const cur = userStore.menuList.find((item) =>
@@ -62,4 +67,21 @@ export const useGetFirstMenus = (menusList: UserMenuNodeDto) => {
     menu = useGetFirstMenus(menusList.Children[0])
   }
   return menu
+}
+
+/**
+ * 修改密码公钥
+ * @returns
+ */
+export const getPwdPublicKey = async (pwdForm: UserChangePwdDto) => {
+  const { data } = await getCurrentPublicKey()
+  const jse = new JSEncrypt()
+  jse.setPublicKey(data)
+  // 进行加密
+  pwdForm.OldPassword = jse.encrypt(pwdForm.OldPassword) as string
+  pwdForm.Password = jse.encrypt(pwdForm.Password) as string
+  pwdForm.RePassword = jse.encrypt(pwdForm.RePassword) as string
+  const userStore = useUserStore()
+  pwdForm.UserId = userStore.userInfo.UserId!
+  return pwdForm
 }

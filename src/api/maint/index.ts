@@ -9,6 +9,7 @@ import type {
   UserMenuNodeDto,
   UserRefreshTokenDto,
   VersionDto,
+  UserChangePwdDto,
 } from './types'
 
 /**
@@ -33,7 +34,7 @@ export function getCurrentPublicKey() {
 }
 
 /**
- * 获取当前公钥
+ * 用户登录
  * @returns
  */
 export function userLogin(data: UserLoginDto) {
@@ -116,6 +117,18 @@ export function userLogoutApi() {
 export function refreshToken(data: UserRefreshTokenDto) {
   return request<UserTokenInfoDto>({
     url: '/maint/account',
+    method: 'put',
+    data,
+  })
+}
+
+/**
+ * 修改登录密码
+ * @returns
+ */
+export function changePassword(data: UserChangePwdDto) {
+  return request({
+    url: '/maint/account/password',
     method: 'put',
     data,
   })

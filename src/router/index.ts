@@ -27,9 +27,9 @@ const routes: MyRouteRecordRaw[] = [
     name: 'revisePassword',
     meta: {
       title: '修改密码',
-      requiresAuth: false,
+      requiresAuth: true,
     },
-    component: () => import('@/views/login/Login.vue'),
+    component: () => import('@/views/layout/components/RevisePassword.vue'),
   },
   {
     path: '/login',

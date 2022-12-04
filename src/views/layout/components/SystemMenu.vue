@@ -53,9 +53,11 @@ onMounted(async () => {
 
 // 切换系统
 const changeSystemFn = (system: UserSystemDto) => {
-  const menu = useGetFirstMenus(userStore.systemMenuObj[system.SystemCode][0])
-  currentSystem.value = system
-  emits('changeMenu', [currentSystem.value, menu])
+  if (userStore.systemMenuObj[system.SystemCode][0]) {
+    const menu = useGetFirstMenus(userStore.systemMenuObj[system.SystemCode][0])
+    currentSystem.value = system
+    emits('changeMenu', [currentSystem.value, menu])
+  }
 }
 </script>
 
