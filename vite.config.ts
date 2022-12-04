@@ -10,7 +10,7 @@ import IconsResolver from 'unplugin-icons/resolver'
 import topLevelAwait from 'vite-plugin-top-level-await'
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   server: {
     port: 8080,
     open: true,
@@ -79,4 +79,7 @@ export default defineConfig({
       },
     },
   },
-})
+  esbuild: {
+    drop: command === 'build' ? ['console', 'debugger'] : [],
+  },
+}))

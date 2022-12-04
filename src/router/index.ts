@@ -9,7 +9,9 @@ const modules = import.meta.glob('./modules/*.ts', {
   eager: true,
 })
 // 把各个中心路由添加到 动态路由
-export const asyncRoutes = Object.values(modules).flatMap((item) => item)
+export const asyncRoutes = Object.values(modules).flatMap(
+  (item) => item,
+) as RouteRecordRaw[]
 
 // 路由映射的对应页面
 const routes: MyRouteRecordRaw[] = [
