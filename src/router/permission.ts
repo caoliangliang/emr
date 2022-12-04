@@ -20,7 +20,7 @@ export default (router: Router) => {
           return { name: 'revisePassword', replace: true }
         }
       } else if (message === '会话过期') {
-        userStore.userInfo.Token = ''
+        await userStore.userLogout(false)
         return { name: 'login', replace: true }
       } else {
         if (to.name === 'login') {

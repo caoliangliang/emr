@@ -139,12 +139,12 @@ export const useUserStore = defineStore('user', {
     },
 
     // 退出登录
-    async userLogout() {
+    async userLogout(isPush: boolean = true) {
       // 退出登录接口
       await userLogoutApi()
       this.clearUserData()
       // 跳转登录页面
-      await router.push('/login')
+      if (isPush) await router.push('/login')
     },
 
     // 清除用户信息
