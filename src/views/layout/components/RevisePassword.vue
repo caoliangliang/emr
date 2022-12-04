@@ -49,7 +49,7 @@
       <el-form-item>
         <el-button
           type="primary"
-          @click="submitPwdForm(pwdFormRef)"
+          @click="debouncedSubmitPwdFormFn(pwdFormRef)"
           :disabled="disabledSubmitPwd"
           >确认修改</el-button
         >
@@ -63,7 +63,7 @@
 import type { UserChangePwdDto } from '@/api/maint/types'
 import { useUserStore } from '@/stores/user'
 import { getUserInfo, changePassword } from '@/api/maint'
-import { useValidate, getPwdPublicKey } from '@/hooks'
+import { useValidate, useGetPwdPublicKey } from '@/hooks'
 import type { FormInstance, FormRules } from 'element-plus'
 import { Lock } from '@element-plus/icons-vue'
 import {
@@ -73,6 +73,7 @@ import {
   pwdRegex3,
   pwdRegex4,
 } from '@/utils/validate'
+import { useDebounceFn } from '@vueuse/core'
 
 const pwdFormRef = ref<FormInstance>()
 
@@ -179,8 +180,8 @@ const submitPwdForm = async (formEl: FormInstance | undefined) => {
   disabledSubmitPwd.value = true
 
   try {
-    await getPwdPublicKey(pwdForm)
-    await changePassword(pwdForm)
+    const newPwdForm = await useGetPwdPublicKey(pwdForm)
+    await changePassword(newPwdForm)
     userStore.userLogout()
     ElMessage({
       message: '密码修改成功，请重新登录',
@@ -192,6 +193,7 @@ const submitPwdForm = async (formEl: FormInstance | undefined) => {
     disabledSubmitPwd.value = false
   }
 }
+const debouncedSubmitPwdFormFn = useDebounceFn(submitPwdForm, 400)
 </script>
 
 <style lang="scss" scoped>

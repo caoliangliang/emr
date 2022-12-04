@@ -26,7 +26,17 @@
             </el-dropdown-menu>
           </template>
         </el-dropdown>
-        <el-button class="log-out" link @click="logoutFn">退出</el-button>
+        <el-popconfirm
+          title="是否确认退出登录?"
+          @confirm="logoutFn"
+          width="200px"
+          confirm-button-text="确认"
+          cancel-button-text="取消"
+        >
+          <template #reference>
+            <el-button class="log-out" link>退出</el-button>
+          </template>
+        </el-popconfirm>
         <el-dialog
           v-model="rePwdVisible"
           title="修改密码"
@@ -54,6 +64,14 @@
       <FooterContent />
     </el-footer>
   </el-container>
+  <!-- 登录过期 -->
+  <template v-if="closedShow">
+    <LoginTimeout
+      v-model="loginTimeoutShow"
+      @change="loginTimeoutFn"
+      @closed="closedFn"
+    />
+  </template>
 </template>
 
 <script setup lang="ts">
@@ -64,9 +82,42 @@ import SystemMenu from './components/SystemMenu.vue'
 import AsideMenu from './components/AsideMenu.vue'
 import FooterContent from './components/FooterContent.vue'
 import RevisePassword from './components/RevisePassword.vue'
+import LoginTimeout from '@/views/login/LoginTimeout.vue'
 import { getUserInfo } from '@/api/maint'
 import { useUserStore } from '@/stores/user'
+import { useIdle } from '@vueuse/core'
 const userStore = useUserStore()
+
+// 页面超时功能 start
+const closedShow = ref(false)
+const loginTimeoutShow = ref(false)
+const { idle } = useIdle(
+  1000 *
+    60 *
+    (userStore.settings.sessionTimeout
+      ? userStore.settings.sessionTimeout
+      : 30),
+)
+const loginTimeoutWatch = () => {
+  const idleUnWatch = watch(idle, (val) => {
+    // 停止侦听器
+    closedShow.value = val
+    loginTimeoutShow.value = val
+    if (val) idleUnWatch()
+  })
+}
+
+const loginTimeoutFn = () => {
+  loginTimeoutWatch()
+}
+onMounted(() => {
+  loginTimeoutWatch()
+})
+// 关闭动画结束
+const closedFn = () => {
+  closedShow.value = false
+}
+// 页面超时功能 end
 
 // 页面挂载之前
 onBeforeMount(() => {
@@ -87,8 +138,14 @@ const changeMenuFn = (SystemMeunArr: [UserSystemDto, UserMenuNodeDto]) => {
 }
 
 // 退出登录
-const logoutFn = () => {
-  userStore.userLogout()
+const logoutFn = async () => {
+  const loading = ElLoading.service({
+    lock: true,
+    text: '退出登录中',
+    background: 'rgba(0, 0, 0, 0.7)',
+  })
+  await userStore.userLogout()
+  loading.close()
 }
 
 // 修改密码

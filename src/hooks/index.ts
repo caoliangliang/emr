@@ -73,15 +73,31 @@ export const useGetFirstMenus = (menusList: UserMenuNodeDto) => {
  * 修改密码公钥
  * @returns
  */
-export const getPwdPublicKey = async (pwdForm: UserChangePwdDto) => {
+export const useGetPwdPublicKey = async (pwdForm: UserChangePwdDto) => {
   const { data } = await getCurrentPublicKey()
   const jse = new JSEncrypt()
   jse.setPublicKey(data)
   // 进行加密
-  pwdForm.OldPassword = jse.encrypt(pwdForm.OldPassword) as string
-  pwdForm.Password = jse.encrypt(pwdForm.Password) as string
-  pwdForm.RePassword = jse.encrypt(pwdForm.RePassword) as string
   const userStore = useUserStore()
   pwdForm.UserId = userStore.userInfo.UserId!
-  return pwdForm
+  const newPwdForm = {
+    OldPassword: jse.encrypt(pwdForm.OldPassword) as string,
+    Password: jse.encrypt(pwdForm.Password) as string,
+    RePassword: jse.encrypt(pwdForm.RePassword) as string,
+    UserId: userStore.userInfo.UserId!,
+  }
+  return newPwdForm
+}
+
+/**
+ * 获取公钥
+ * @param pwd
+ * @returns
+ */
+export const useGetPublicKey = async (pwd: string) => {
+  const { data } = await getCurrentPublicKey()
+  const jse = new JSEncrypt()
+  jse.setPublicKey(data)
+  const newPwd = jse.encrypt(pwd) as string // 进行加密
+  return newPwd
 }

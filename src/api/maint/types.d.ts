@@ -1,6 +1,7 @@
 // 配置文件
 export interface SettingsDto {
   title?: string
+  sessionTimeout?: number
 }
 
 // 版本文件

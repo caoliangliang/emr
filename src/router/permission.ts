@@ -1,7 +1,6 @@
 // 路由权限
 import type { Router } from 'vue-router'
 import { getPageTitle } from '@/utils/get-page-title'
-import { getSettings } from '@/api/maint'
 import { useUserStore } from '@/stores/user'
 
 export default (router: Router) => {
@@ -12,26 +11,39 @@ export default (router: Router) => {
 
     if (token) {
       // 如果有token
-      if (to.name === 'login') {
-        // 如果去的是登陆页 - 回到主页
-        if (userStore.userInfo && userStore.userInfo.UserId) {
-          return { name: 'layout' }
-        } else {
-          userStore.clearUserData()
+      const message = userStore.userInfo && userStore.userInfo.Message
+      if (message === '密码过期') {
+        // 如果密码过期
+        if (to.name === 'revisePassword') {
           return true
+        } else {
+          return { name: 'revisePassword', replace: true }
         }
+      } else if (message === '会话过期') {
+        userStore.userInfo.Token = ''
+        return { name: 'login', replace: true }
       } else {
-        // 如果去的不是登陆页 并且没有菜单
-        if (!userStore.loading.systemList) {
-          // 获取菜单
-          await userStore.getSytemListAndMenu()
-
-          return {
-            path: to.path,
-            replace: true,
+        if (to.name === 'login') {
+          // 如果去的是登陆页 - 回到主页
+          if (userStore.userInfo && userStore.userInfo.UserId) {
+            return { name: 'layout' }
+          } else {
+            userStore.clearUserData()
+            return true
           }
         } else {
-          return true
+          // 如果去的不是登陆页 并且没有菜单
+          if (!userStore.loading.systemList) {
+            // 获取菜单
+            await userStore.getSytemListAndMenu()
+
+            return {
+              path: to.path,
+              replace: true,
+            }
+          } else {
+            return true
+          }
         }
       }
     } else {
@@ -51,9 +63,7 @@ export default (router: Router) => {
     // 是否加载过配置文件
     if (!userStore.loading.settings) {
       // 获取本地配置
-      const { data } = await getSettings()
-      // 保存到store
-      userStore.updateSettings(data)
+      await userStore.updateSettings()
     }
 
     // 设置标题

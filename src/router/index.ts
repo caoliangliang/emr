@@ -3,9 +3,10 @@ import type { RouteRecordRaw, MyRouteRecordRaw } from 'vue-router'
 import Layout from '../views/layout/Layout.vue'
 import permission from './permission'
 
+// 导入各个中心路由
 import maintenanceRouter from './modules/maintenance'
 
-// 动态路由
+// 把各个中心路由添加到 动态路由
 export const asyncRoutes = [
   ...maintenanceRouter, //运维中心
 ]

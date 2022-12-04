@@ -15,6 +15,7 @@ import {
   getMenuBysystemCode,
   refreshToken,
   getVersionNote,
+  getSettings,
 } from '@/api/maint'
 import { setStroage, getStroage, clearStorage } from '@/utils/stroage'
 import router from '@/router'
@@ -131,9 +132,9 @@ export const useUserStore = defineStore('user', {
       setStroage<PartialUserInfo>('userInfo', this.userInfo)
     },
     // 更新设置
-    updateSettings(settings: SettingsDto) {
-      setStroage<SettingsDto>('settings', settings)
-      this.settings = settings
+    async updateSettings() {
+      const { data } = await getSettings()
+      this.settings = data
       this.loading.settings = true
     },
 
@@ -143,7 +144,7 @@ export const useUserStore = defineStore('user', {
       await userLogoutApi()
       this.clearUserData()
       // 跳转登录页面
-      router.push('/login')
+      await router.push('/login')
     },
 
     // 清除用户信息
