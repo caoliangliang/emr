@@ -4,12 +4,12 @@ import Layout from '../views/layout/Layout.vue'
 import permission from './permission'
 
 // 导入各个中心路由
-import maintenanceRouter from './modules/maintenance'
-
+const modules = import.meta.glob('./modules/*.ts', {
+  import: 'default',
+  eager: true,
+})
 // 把各个中心路由添加到 动态路由
-export const asyncRoutes = [
-  ...maintenanceRouter, //运维中心
-]
+export const asyncRoutes = Object.values(modules).flatMap((item) => item)
 
 // 路由映射的对应页面
 const routes: MyRouteRecordRaw[] = [
