@@ -33,6 +33,7 @@ declare module '@vue/runtime-core' {
     ElSelect: typeof import('element-plus/es')['ElSelect']
     ElSpace: typeof import('element-plus/es')['ElSpace']
     ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
+    EmrTable: typeof import('./src/components/EmrTable.vue')['default']
     IEpBell: typeof import('~icons/ep/bell')['default']
     IEpCaretBottom: typeof import('~icons/ep/caret-bottom')['default']
     IEpMenu: typeof import('~icons/ep/menu')['default']
