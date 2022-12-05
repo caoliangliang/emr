@@ -62,7 +62,7 @@
 </template>
 
 <script setup lang="ts">
-import type { GetMenuType } from '../typings'
+import type { GetMenuType } from '../types'
 import type { UserMenuNodeDto } from '@/api/maint/types'
 import { useUserStore } from '@/stores/user'
 

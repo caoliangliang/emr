@@ -76,7 +76,7 @@
 
 <script setup lang="ts">
 import type { UserSystemDto, UserMenuNodeDto } from '@/api/maint/types'
-import type { AsideMenuInstance } from './typings'
+import type { AsideMenuInstance } from './types'
 import logoUrl from '@/assets/images/logo.png'
 import SystemMenu from './components/SystemMenu.vue'
 import AsideMenu from './components/AsideMenu.vue'
