@@ -181,7 +181,7 @@ const commandFn = (command: string) => {
       margin-right: 20px;
       width: 219px;
       height: 100%;
-      background: url('@/assets/images/nav_bg.png') no-repeat;
+      background: url('@/assets/images/nav_bg.png') no-repeat center / cover;
 
       .logo {
         :deep(img) {

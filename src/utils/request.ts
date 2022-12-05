@@ -37,6 +37,7 @@ instance.interceptors.response.use(
     return response
   },
   async (error) => {
+    // 对响应错误做点什么
     const res = error.response
     const userStore = useUserStore()
     const router = useRouter()
@@ -59,7 +60,6 @@ instance.interceptors.response.use(
       ElMessage.error(res.data.detail || res.data.title)
     }
 
-    // 对响应错误做点什么
     return Promise.reject(error)
   },
 )
