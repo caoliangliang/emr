@@ -38,17 +38,25 @@ instance.interceptors.response.use(
   },
   async (error) => {
     const res = error.response
-    // 401
-    if (res.status === 401) {
-      const userStore = useUserStore()
-      // 刷新token
+    const userStore = useUserStore()
+    const router = useRouter()
+
+    if (res.status == 401) {
+      // 401 刷新token
       await userStore.refreshUserToken()
       // 重新请求
       return instance.request(error.config)
+    } else if (
+      res.status == 500 &&
+      res.config.url === '/maint/account' &&
+      res.config.method === 'put'
+    ) {
+      // 500 并且刷新token接口错误
+      userStore.clearUserData()
+      await router.push('/login')
     } else {
       // 提示错误信息
-      const msg = res.data.detail || res.data.title
-      ElMessage.error(msg)
+      ElMessage.error(res.data.detail || res.data.title)
     }
 
     // 对响应错误做点什么
