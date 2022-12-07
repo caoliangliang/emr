@@ -59,7 +59,7 @@ import type {
 } from '@/api/maint/types'
 import type { FormInstance, FormRules } from 'element-plus'
 import { User, Lock, House } from '@element-plus/icons-vue'
-import { getHospitalByUserName, userLogin } from '@/api/maint'
+import { userAPI, accountAPI } from '@/api/maint'
 import { useValidate, useGetPublicKey } from '@/hooks'
 import { useUserStore } from '@/stores/user'
 import { useDebounceFn } from '@vueuse/core'
@@ -89,7 +89,9 @@ const hospitalList = ref<UserHospitalDto[]>([])
 // 获取院区
 const getHospitalListFn = async () => {
   if (logoForm.Account === '') return
-  const { data } = await getHospitalByUserName({ userName: logoForm.Account })
+  const { data } = await userAPI.getHospitalByUserName({
+    userName: logoForm.Account,
+  })
   hospitalList.value = data
   if (data.length > 0) {
     logoForm.HospitalCode = data[0].HospitalCode
@@ -114,7 +116,7 @@ const login = async (logoFormRef: FormInstance | undefined) => {
     const pwdLengthFlag = logoForm.Password.length < 8
     const pwd = await useGetPublicKey(logoForm.Password)
     // 登录
-    const { data } = await userLogin({ ...logoForm, Password: pwd })
+    const { data } = await accountAPI.userLogin({ ...logoForm, Password: pwd })
 
     // 登录和token数据存储到 pinia
     const { Password, ...logoFormRest } = logoForm

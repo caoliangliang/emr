@@ -62,7 +62,7 @@
 <script setup lang="ts">
 import type { UserChangePwdDto } from '@/api/maint/types'
 import { useUserStore } from '@/stores/user'
-import { getUserInfo, changePassword } from '@/api/maint'
+import { accountAPI } from '@/api/maint'
 import { useValidate, useGetPwdPublicKey } from '@/hooks'
 import type { FormInstance, FormRules } from 'element-plus'
 import { Lock } from '@element-plus/icons-vue'
@@ -110,7 +110,7 @@ const Pwdrules = reactive<FormRules>({
 const userStore = useUserStore()
 // 获取id方法
 const getUserInfoProfile = async () => {
-  const { data } = await getUserInfo()
+  const { data } = await accountAPI.getUserInfo()
   userStore.updateProfile(data.Profile)
 }
 // 没有用户id
@@ -181,7 +181,7 @@ const submitPwdForm = async (formEl: FormInstance | undefined) => {
 
   try {
     const newPwdForm = await useGetPwdPublicKey(pwdForm)
-    await changePassword(newPwdForm)
+    await accountAPI.changePassword(newPwdForm)
     userStore.userLogout()
     ElMessage({
       message: '密码修改成功，请重新登录',

@@ -9,14 +9,7 @@ import type {
   VersionDto,
 } from '@/api/maint/types'
 import type { AxiosResponse } from 'axios'
-import {
-  userLogoutApi,
-  getSystemByHospitalCode,
-  getMenuBysystemCode,
-  refreshToken,
-  getVersionNote,
-  getSettings,
-} from '@/api/maint'
+import { userAPI, accountAPI, localAPI } from '@/api/maint'
 import { setStroage, getStroage, clearStorage } from '@/utils/stroage'
 import router from '@/router'
 import { menuListFlat } from '@/utils'
@@ -67,7 +60,7 @@ export const useUserStore = defineStore('user', {
     // 获取本地版本文件
     async getVersion() {
       if (this.loading.version) return this.version
-      const { data } = await getVersionNote()
+      const { data } = await localAPI.getVersionNote()
       this.version = data
       this.loading.version = true
       return this.version
@@ -85,7 +78,7 @@ export const useUserStore = defineStore('user', {
         }
 
       // 获取系统
-      const { data } = await getSystemByHospitalCode({
+      const { data } = await userAPI.getSystemByHospitalCode({
         hospitalCode: this.userInfo.HospitalCode,
       })
       this.systemList = data
@@ -93,7 +86,9 @@ export const useUserStore = defineStore('user', {
       // 获取菜单
       const promisArr: Promise<AxiosResponse<UserMenuNodeDto[], any>>[] = []
       data.SystemList.forEach((item) =>
-        promisArr.push(getMenuBysystemCode({ systemCode: item.SystemCode })),
+        promisArr.push(
+          userAPI.getMenuBysystemCode({ systemCode: item.SystemCode }),
+        ),
       )
       const resMenu = await Promise.all(promisArr)
       data.SystemList.forEach((item, i) => {
@@ -133,7 +128,7 @@ export const useUserStore = defineStore('user', {
     },
     // 更新设置
     async updateSettings() {
-      const { data } = await getSettings()
+      const { data } = await localAPI.getSettings()
       this.settings = data
       this.loading.settings = true
     },
@@ -141,7 +136,7 @@ export const useUserStore = defineStore('user', {
     // 退出登录
     async userLogout(isPush: boolean = true) {
       // 退出登录接口
-      await userLogoutApi()
+      await accountAPI.userLogoutApi()
       this.clearUserData()
       // 跳转登录页面
       if (isPush) await router.push('/login')
@@ -157,7 +152,7 @@ export const useUserStore = defineStore('user', {
 
     // 刷新token
     async refreshUserToken() {
-      const { data } = await refreshToken({
+      const { data } = await accountAPI.refreshToken({
         Id: this.userInfo.UserId!,
         Account: this.userInfo.Account,
         RefreshToken: this.userInfo.RefreshToken,

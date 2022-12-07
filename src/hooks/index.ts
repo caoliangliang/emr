@@ -4,7 +4,7 @@ import type {
   UserSystemDto,
   UserChangePwdDto,
 } from '@/api/maint/types'
-import { getCurrentPublicKey } from '@/api/maint'
+import { accountAPI } from '@/api/maint'
 import router, { asyncRoutes } from '@/router'
 import type { RouteRecordRaw } from 'vue-router'
 import { useUserStore } from '@/stores/user'
@@ -74,7 +74,7 @@ export const useGetFirstMenus = (menusList: UserMenuNodeDto) => {
  * @returns
  */
 export const useGetPwdPublicKey = async (pwdForm: UserChangePwdDto) => {
-  const { data } = await getCurrentPublicKey()
+  const { data } = await accountAPI.getCurrentPublicKey()
   const jse = new JSEncrypt()
   jse.setPublicKey(data)
   // 进行加密
@@ -95,7 +95,7 @@ export const useGetPwdPublicKey = async (pwdForm: UserChangePwdDto) => {
  * @returns
  */
 export const useGetPublicKey = async (pwd: string) => {
-  const { data } = await getCurrentPublicKey()
+  const { data } = await accountAPI.getCurrentPublicKey()
   const jse = new JSEncrypt()
   jse.setPublicKey(data)
   const newPwd = jse.encrypt(pwd) as string // 进行加密

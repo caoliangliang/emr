@@ -83,7 +83,7 @@ import AsideMenu from './components/AsideMenu.vue'
 import FooterContent from './components/FooterContent.vue'
 import RevisePassword from './components/RevisePassword.vue'
 import LoginTimeout from '@/views/login/LoginTimeout.vue'
-import { getUserInfo } from '@/api/maint'
+import { accountAPI } from '@/api/maint'
 import { useUserStore } from '@/stores/user'
 import { useIdle } from '@vueuse/core'
 const userStore = useUserStore()
@@ -127,7 +127,7 @@ onBeforeMount(() => {
 
 // 获取个人信息
 const getUserInfoProfile = async () => {
-  const { data } = await getUserInfo()
+  const { data } = await accountAPI.getUserInfo()
   userStore.updateProfile(data.Profile)
 }
 // 侧边栏ref

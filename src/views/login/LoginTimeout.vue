@@ -70,7 +70,7 @@ import dayjs from 'dayjs'
 import type { UserLoginDto, UserTokenInfoDto } from '@/api/maint/types'
 import type { FormInstance, FormRules } from 'element-plus'
 import { Lock } from '@element-plus/icons-vue'
-import { userLogin } from '@/api/maint'
+import { accountAPI } from '@/api/maint'
 import { useValidate, useGetPublicKey } from '@/hooks'
 import { useUserStore } from '@/stores/user'
 
@@ -163,7 +163,7 @@ const login = async (logoFormRef: FormInstance | undefined) => {
 
   const pwd = await useGetPublicKey(logoForm.Password)
   // 登录
-  const { data } = await userLogin({ ...logoForm, Password: pwd })
+  const { data } = await accountAPI.userLogin({ ...logoForm, Password: pwd })
   // 登录和token数据存储到 pinia
   const { Password, ...logoFormRest } = logoForm
   const userInfo = {
